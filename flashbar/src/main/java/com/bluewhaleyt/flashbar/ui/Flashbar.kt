@@ -4,8 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,33 +15,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.bluewhaleyt.flashbar.model.FlashbarMessageType
 import com.bluewhaleyt.flashbar.model.FlashbarPosition
 import com.bluewhaleyt.flashbar.state.FlashbarState
 import com.bluewhaleyt.flashbar.utils.containerColor
 import com.bluewhaleyt.flashbar.utils.contentColor
-import com.bluewhaleyt.flashbar.utils.rippleColor
 import java.util.Timer
 import kotlin.concurrent.schedule
 
@@ -55,13 +41,16 @@ internal fun Flashbar(
     exitTransition: ExitTransition,
     position: FlashbarPosition,
     horizontalSpacing: Dp,
-    maxLines: Int
+    maxLines: Int,
+    textStyle: TextStyle,
 ) {
     DisposableEffect(key1 = state.updated) {
-        state.show = true
         val timer = Timer("Animate message bar timer", true)
-        timer.schedule(state.duration) {
-            state.show = false
+        state.message?.let {
+            state.show = true
+            timer.schedule(it.duration) {
+                state.show = false
+            }
         }
         onDispose {
             timer.cancel()
@@ -97,7 +86,8 @@ internal fun Flashbar(
                     Text(
                         modifier = Modifier.weight(1f),
                         text = it.text,
-                        maxLines = maxLines
+                        maxLines = maxLines,
+                        style = textStyle
                     )
                     it.actions?.let {
                         Row {

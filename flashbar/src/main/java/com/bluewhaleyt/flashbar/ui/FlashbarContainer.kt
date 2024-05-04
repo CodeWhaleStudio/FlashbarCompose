@@ -14,8 +14,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.bluewhaleyt.flashbar.model.FlashbarPosition
@@ -31,6 +33,7 @@ fun FlashbarContainer(
     position: FlashbarPosition = FlashbarPosition.Top,
     horizontalSpacing: Dp = 16.dp,
     maxLines: Int = 2,
+    textStyle: TextStyle = LocalTextStyle.current,
     edgeToEdge: Boolean = false,
     padding: PaddingValues = getFlashbarContainerPadding(position, edgeToEdge),
     content: @Composable ColumnScope.() -> Unit
@@ -43,7 +46,8 @@ fun FlashbarContainer(
         exitTransition = exitTransition,
         position = position,
         horizontalSpacing = horizontalSpacing,
-        maxLines = maxLines
+        maxLines = maxLines,
+        textStyle = textStyle
     ) {
         Column(
             modifier = Modifier
@@ -65,11 +69,12 @@ private fun FlashbarContainer(
     modifier: Modifier = Modifier,
     innerModifier: Modifier = Modifier,
     state: FlashbarState,
-    enterTransition: EnterTransition = fadeIn() + expandVertically(),
-    exitTransition: ExitTransition = fadeOut() + shrinkVertically(),
+    enterTransition: EnterTransition,
+    exitTransition: ExitTransition,
     position: FlashbarPosition,
     horizontalSpacing: Dp,
     maxLines: Int,
+    textStyle: TextStyle,
     content: @Composable () -> Unit
 ) {
     Box(
@@ -83,7 +88,8 @@ private fun FlashbarContainer(
             exitTransition = exitTransition,
             position = position,
             horizontalSpacing = horizontalSpacing,
-            maxLines = maxLines
+            maxLines = maxLines,
+            textStyle = textStyle
         )
     }
 }

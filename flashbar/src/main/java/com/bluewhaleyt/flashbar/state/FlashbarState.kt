@@ -5,61 +5,66 @@ import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.bluewhaleyt.flashbar.model.FlashbarAction
+import com.bluewhaleyt.flashbar.model.FlashbarDefaults
 import com.bluewhaleyt.flashbar.model.FlashbarMessage
 import com.bluewhaleyt.flashbar.model.FlashbarMessageType
 
 class FlashbarState {
-    companion object {
-        private const val DURATION = 3000L
-    }
     internal var show by mutableStateOf(false)
     internal var message by mutableStateOf<FlashbarMessage?>(null)
     internal var updated by mutableStateOf(false)
-    internal var duration by mutableLongStateOf(DURATION)
 
     fun dismiss() {
         show = false
     }
 
+    fun message(
+        text: String,
+        icon: ImageVector = Icons.Outlined.Info,
+        actions: List<FlashbarAction>? = null,
+        duration: Long = FlashbarDefaults.DURATION_SHORT
+    ) {
+        message(FlashbarMessageType.Normal, text, icon, actions, duration)
+    }
+
     fun info(
         text: String,
         icon: ImageVector = Icons.Outlined.Info,
-        actions: List<FlashbarAction> = emptyList(),
-        duration: Long = DURATION
+        actions: List<FlashbarAction>? = null,
+        duration: Long = FlashbarDefaults.DURATION_SHORT
     ) {
-        message(text, icon, actions, FlashbarMessageType.Info, duration)
+        message(FlashbarMessageType.Info, text, icon, actions, duration)
     }
 
     fun error(
         text: String,
         icon: ImageVector = Icons.Outlined.ErrorOutline,
-        actions: List<FlashbarAction> = emptyList(),
-        duration: Long = DURATION
+        actions: List<FlashbarAction>? = null,
+        duration: Long = FlashbarDefaults.DURATION_SHORT
     ) {
-        message(text, icon, actions, FlashbarMessageType.Error, duration)
+        message(FlashbarMessageType.Error, text, icon, actions, duration)
     }
 
     private fun message(
+        type: FlashbarMessageType,
         text: String,
         icon: ImageVector,
-        actions: List<FlashbarAction> = emptyList(),
-        type: FlashbarMessageType,
-        duration: Long
+        actions: List<FlashbarAction>?,
+        duration: Long,
     ) {
         if (text.isNotEmpty()) {
             this.message = FlashbarMessage(
                 text = text,
                 icon = icon,
                 actions = actions,
+                duration = duration,
                 type = type
             )
-            this.duration = duration
             this.updated = !updated
         }
     }

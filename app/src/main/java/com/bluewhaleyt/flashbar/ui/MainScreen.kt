@@ -5,16 +5,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.bluewhaleyt.flashbar.model.FlashbarMessageType
-import com.bluewhaleyt.flashbar.model.FlashbarPosition
 import com.bluewhaleyt.flashbar.MainViewModel
 import com.bluewhaleyt.flashbar.model.FlashbarAction
+import com.bluewhaleyt.flashbar.model.FlashbarMessageType
+import com.bluewhaleyt.flashbar.model.FlashbarPosition
 import com.bluewhaleyt.flashbar.state.rememberFlashbarState
 
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel = viewModel()
+    viewModel: MainViewModel
 ) {
     val flashbarState = rememberFlashbarState()
     val flashbarPosition = FlashbarPosition.entries[viewModel.selectedFlashbarPositionIndex]
@@ -29,11 +28,17 @@ fun MainScreen(
             viewModel = viewModel,
             onSendMessage = {
                 when (flashbarMessageType) {
+                    FlashbarMessageType.Normal -> flashbarState.message(
+                        text = viewModel.flashbarMessageText,
+                        duration = viewModel.flashbarDuration.toLong()
+                    )
                     FlashbarMessageType.Info -> flashbarState.info(
                         text = viewModel.flashbarMessageText,
+                        duration = viewModel.flashbarDuration.toLong()
                     )
                     FlashbarMessageType.Error -> flashbarState.error(
                         text = viewModel.flashbarMessageText,
+                        duration = viewModel.flashbarDuration.toLong(),
                         actions = listOf(
                             FlashbarAction("Dismiss") {
                                 flashbarState.dismiss()
